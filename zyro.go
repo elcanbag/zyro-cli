@@ -59,6 +59,19 @@ func main() {
 		}
 		fmt.Println(string(hash))
 
+	case "verify-hash":
+		if len(os.Args) < 4 {
+			fmt.Println("Usage: zyro verify-hash [text] [hash]")
+			return
+		}
+		text := os.Args[2]
+		hashed := os.Args[3]
+		if verifyBcrypt(text, hashed) {
+			fmt.Println("✅ Match")
+		} else {
+			fmt.Println("❌ No match")
+		}
+
 	default:
 		fmt.Println("Unknown command:", command)
 	}
@@ -77,14 +90,25 @@ func generatePassword(length int) string {
 func printHelp() {
 	fmt.Println(`Zyro CLI - Password and Utility Tool
 Usage:
-  zyro pass [length]       Generate a random password (default: 12 chars)
-  zyro hash [text]         Generate SHA256 hash of input
-  zyro bcrypt [text]       Generate bcrypt hash of input
-  zyro -v | --version      Show current version
-  zyro help                Show this help message`)
+  zyro pass [length]              Generate a random password (default: 12 chars)
+  zyro hash [text]                Generate SHA256 hash of input
+  zyro bcrypt [text]              Generate bcrypt hash of input
+  zyro verify-hash [text] ['hash']  Verify text against bcrypt hash
+  zyro -v | --version             Show current version
+  zyro help                       Show this help message`)
 }
 
 func sha256Hash(text string) string {
 	hash := sha256.Sum256([]byte(text))
 	return hex.EncodeToString(hash[:])
+}
+
+func verifyBcrypt(text, hashed string) bool {
+	fmt.Println("Text to compare:", text)
+	fmt.Println("Hash to compare:", hashed)
+	err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(text))
+	if err != nil {
+		fmt.Println("BCRYPT ERROR:", err)
+	}
+	return err == nil
 }
