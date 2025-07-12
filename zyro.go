@@ -1,4 +1,3 @@
-// main.go
 package main
 
 import (
@@ -9,15 +8,18 @@ import (
 	"time"
 )
 
+const version = "ZYRO 1.0.0"
+
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: zyro pass [length]")
+		fmt.Println("Usage: zyro [command]")
 		return
 	}
 
 	command := os.Args[1]
 
-	if command == "pass" {
+	switch command {
+	case "pass":
 		length := 12 // default
 		if len(os.Args) >= 3 {
 			l, err := strconv.Atoi(os.Args[2])
@@ -26,7 +28,11 @@ func main() {
 			}
 		}
 		fmt.Println(generatePassword(length))
-	} else {
+
+	case "-v", "--version":
+		fmt.Println(version)
+
+	default:
 		fmt.Println("Unknown command:", command)
 	}
 }
