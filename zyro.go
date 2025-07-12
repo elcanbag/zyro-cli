@@ -32,6 +32,9 @@ func main() {
 	case "-v", "--version":
 		fmt.Println(version)
 
+	case "help":
+		printHelp()
+
 	default:
 		fmt.Println("Unknown command:", command)
 	}
@@ -45,4 +48,12 @@ func generatePassword(length int) string {
 		pass[i] = charset[rand.Intn(len(charset))]
 	}
 	return string(pass)
+}
+
+func printHelp() {
+	fmt.Println(`Zyro CLI - Password and Utility Tool
+Usage:
+  zyro pass [length]     Generate a random password (default: 12 chars)
+  zyro -v | --version    Show current version
+  zyro help              Show this help message`)
 }
