@@ -71,6 +71,8 @@ func main() {
 		} else {
 			fmt.Println("❌ No match")
 		}
+	case "flip":
+		fmt.Println(flipCoin())
 
 	default:
 		fmt.Println("Unknown command:", command)
@@ -93,7 +95,8 @@ Usage:
   zyro pass [length]              Generate a random password (default: 12 chars)
   zyro hash [text]                Generate SHA256 hash of input
   zyro bcrypt [text]              Generate bcrypt hash of input
-  zyro verify-hash [text] ['hash']  Verify text against bcrypt hash
+  zyro verify-hash [text] [hash]  Verify text against a bcrypt hash
+  zyro flip                       Flip a virtual coin (Heads or Tails)
   zyro -v | --version             Show current version
   zyro help                       Show this help message`)
 }
@@ -111,4 +114,12 @@ func verifyBcrypt(text, hashed string) bool {
 		fmt.Println("BCRYPT ERROR:", err)
 	}
 	return err == nil
+}
+
+func flipCoin() string {
+	rand.Seed(time.Now().UnixNano())
+	if rand.Intn(2) == 0 {
+		return "🪙 Heads"
+	}
+	return "🪙 Tails"
 }
