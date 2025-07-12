@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"math/rand"
 	"os"
 	"strconv"
@@ -45,6 +46,19 @@ func main() {
 		text := os.Args[2]
 		fmt.Println(sha256Hash(text))
 
+	case "bcrypt":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: zyro bcrypt [text]")
+			return
+		}
+		text := os.Args[2]
+		hash, err := bcrypt.GenerateFromPassword([]byte(text), bcrypt.DefaultCost)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		fmt.Println(string(hash))
+
 	default:
 		fmt.Println("Unknown command:", command)
 	}
@@ -65,6 +79,7 @@ func printHelp() {
 Usage:
   zyro pass [length]       Generate a random password (default: 12 chars)
   zyro hash [text]         Generate SHA256 hash of input
+  zyro bcrypt [text]       Generate bcrypt hash of input
   zyro -v | --version      Show current version
   zyro help                Show this help message`)
 }
