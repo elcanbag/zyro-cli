@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"math/rand"
 	"os"
@@ -35,6 +37,14 @@ func main() {
 	case "help":
 		printHelp()
 
+	case "hash":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: zyro hash [text]")
+			return
+		}
+		text := os.Args[2]
+		fmt.Println(sha256Hash(text))
+
 	default:
 		fmt.Println("Unknown command:", command)
 	}
@@ -53,7 +63,13 @@ func generatePassword(length int) string {
 func printHelp() {
 	fmt.Println(`Zyro CLI - Password and Utility Tool
 Usage:
-  zyro pass [length]     Generate a random password (default: 12 chars)
-  zyro -v | --version    Show current version
-  zyro help              Show this help message`)
+  zyro pass [length]       Generate a random password (default: 12 chars)
+  zyro hash [text]         Generate SHA256 hash of input
+  zyro -v | --version      Show current version
+  zyro help                Show this help message`)
+}
+
+func sha256Hash(text string) string {
+	hash := sha256.Sum256([]byte(text))
+	return hex.EncodeToString(hash[:])
 }
